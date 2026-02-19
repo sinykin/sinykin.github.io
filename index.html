@@ -260,11 +260,28 @@
     </nav>
 
     <div class="epigraph">
-      <p>"I have a competition in me.<br>I want no one else to succeed."</p>
+      <p id="plainview"></p>
     </div>
   </div>
 
   <script>
+    /* ── Random Plainview quote ── */
+    const quotes = [
+      "I have a competition in me.\nI want no one else to succeed.",
+      "There are times when I look at people\nand I see nothing worth liking.",
+      "I drink your milkshake.\nI drink it up.",
+      "I have a weakness.\nIt has lasted all my life.",
+      "Don\u2019t be thick in front of me, Al.",
+      "I\u2019m finished.",
+      "One night I\u2019m going to come to you,\ninside of your house, wherever you\u2019re sleeping,\nand I\u2019m going to cut your throat.",
+      "I told you I would eat you.",
+      "Are you an angry man, Henry?",
+      "I see the worst in people.\nI don\u2019t need to look past seeing them\nto get all I need.",
+    ];
+    const q = quotes[Math.floor(Math.random() * quotes.length)];
+    const el = document.getElementById('plainview');
+    el.innerHTML = '\u201C' + q.replace(/\n/g, '<br>') + '\u201D';
+
     /* ── Letter-by-letter name render ── */
     const nameEl = document.getElementById('name');
     const nameText = 'Dan Sinykin';
