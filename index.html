@@ -430,6 +430,93 @@
     }
 
     animate();
+
+    /* ── Glitter starbursts on arrival ── */
+    const glitterCanvas = document.createElement('canvas');
+    glitterCanvas.style.cssText = 'position:fixed;inset:0;z-index:3;pointer-events:none;';
+    document.body.appendChild(glitterCanvas);
+    const gCtx = glitterCanvas.getContext('2d');
+    glitterCanvas.width = window.innerWidth;
+    glitterCanvas.height = window.innerHeight;
+
+    const sparks = [];
+    const BURST_COUNT = 8;
+    const SPARKS_PER_BURST = 18;
+
+    for (let b = 0; b < BURST_COUNT; b++) {
+      const cx = Math.random() * glitterCanvas.width;
+      const cy = Math.random() * glitterCanvas.height;
+      const delay = Math.random() * 600;
+      for (let i = 0; i < SPARKS_PER_BURST; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = Math.random() * 2.5 + 0.8;
+        const hue = Math.random() * 40 + 280; /* purple-pink range */
+        const size = Math.random() * 3 + 1.5;
+        sparks.push({
+          x: cx, y: cy,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+          life: 1,
+          decay: Math.random() * 0.012 + 0.008,
+          size: size,
+          hue: hue,
+          delay: delay,
+          born: performance.now(),
+          twinkle: Math.random() * Math.PI * 2,
+        });
+      }
+    }
+
+    function animateGlitter(now) {
+      gCtx.clearRect(0, 0, glitterCanvas.width, glitterCanvas.height);
+      let alive = false;
+
+      sparks.forEach(s => {
+        const elapsed = now - s.born;
+        if (elapsed < s.delay) { alive = true; return; }
+        if (s.life <= 0) return;
+
+        alive = true;
+        s.x += s.vx;
+        s.y += s.vy;
+        s.vx *= 0.98;
+        s.vy *= 0.98;
+        s.vy += 0.02; /* tiny gravity */
+        s.life -= s.decay;
+        s.twinkle += 0.15;
+
+        const flicker = 0.6 + 0.4 * Math.sin(s.twinkle);
+        const alpha = s.life * flicker;
+        if (alpha <= 0) return;
+
+        /* Draw a tiny 4-point star */
+        gCtx.save();
+        gCtx.translate(s.x, s.y);
+        gCtx.rotate(s.twinkle * 0.3);
+        gCtx.fillStyle = `hsla(${s.hue}, 80%, 75%, ${alpha})`;
+        gCtx.shadowColor = `hsla(${s.hue}, 90%, 70%, ${alpha * 0.6})`;
+        gCtx.shadowBlur = 6;
+        const r = s.size * s.life;
+        gCtx.beginPath();
+        for (let p = 0; p < 4; p++) {
+          const a = (p / 4) * Math.PI * 2 - Math.PI / 2;
+          const aM = a + Math.PI / 4;
+          gCtx.lineTo(Math.cos(a) * r * 2, Math.sin(a) * r * 2);
+          gCtx.lineTo(Math.cos(aM) * r * 0.5, Math.sin(aM) * r * 0.5);
+        }
+        gCtx.closePath();
+        gCtx.fill();
+        gCtx.restore();
+      });
+
+      if (alive) {
+        requestAnimationFrame(animateGlitter);
+      } else {
+        glitterCanvas.remove();
+      }
+    }
+
+    requestAnimationFrame(animateGlitter);
   </script>
 </body>
 </html>
