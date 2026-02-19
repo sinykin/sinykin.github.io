@@ -56,15 +56,23 @@
       opacity: 0.6;
     }
 
-    /* ── Back nav ── */
-    .back {
+    /* ── Sidebar nav ── */
+    .sidebar {
       position: fixed;
-      top: 2rem;
-      left: 2rem;
+      top: 0;
+      left: 0;
+      width: 200px;
+      height: 100vh;
+      padding: 6rem 1.5rem 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
       z-index: 10;
+      opacity: 0;
+      animation: fadeUp 1s ease 0.2s forwards;
     }
 
-    .back a {
+    .sidebar .back-link {
       color: var(--text-dim);
       text-decoration: none;
       font-family: 'Inter', sans-serif;
@@ -73,9 +81,38 @@
       letter-spacing: 0.15em;
       text-transform: lowercase;
       transition: color 0.4s ease;
+      margin-bottom: 0.5rem;
     }
 
-    .back a:hover {
+    .sidebar .back-link:hover {
+      color: var(--accent);
+    }
+
+    .sidebar .sidebar-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.5rem;
+      font-weight: 300;
+      color: var(--warm-white);
+      margin-bottom: 1.5rem;
+    }
+
+    .sidebar a.nav-link {
+      color: var(--text-dim);
+      text-decoration: none;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 300;
+      letter-spacing: 0.15em;
+      text-transform: lowercase;
+      padding: 0.35rem 0;
+      transition: color 0.3s ease;
+    }
+
+    .sidebar a.nav-link:hover {
+      color: var(--warm-white);
+    }
+
+    .sidebar a.nav-link.active {
       color: var(--accent);
     }
 
@@ -85,6 +122,7 @@
       z-index: 2;
       max-width: 720px;
       margin: 0 auto;
+      margin-left: max(200px, calc(50% - 360px));
       padding: 6rem 2rem 4rem;
     }
 
@@ -207,13 +245,36 @@
     }
 
     /* ── Mobile ── */
-    @media (max-width: 600px) {
-      .back {
-        top: 1.2rem;
-        left: 1.2rem;
+    @media (max-width: 900px) {
+      .sidebar {
+        position: relative;
+        width: 100%;
+        height: auto;
+        padding: 2rem 2rem 0;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: baseline;
+        gap: 0 1.2rem;
+      }
+      .sidebar .back-link {
+        width: 100%;
+        margin-bottom: 0.3rem;
+      }
+      .sidebar .sidebar-title {
+        width: 100%;
+        margin-bottom: 0.8rem;
       }
       .container {
-        padding: 5rem 1.5rem 3rem;
+        margin-left: auto;
+        padding: 2rem 2rem 3rem;
+      }
+    }
+    @media (max-width: 600px) {
+      .sidebar {
+        padding: 1.5rem 1.5rem 0;
+      }
+      .container {
+        padding: 1.5rem 1.5rem 3rem;
       }
     }
   </style>
@@ -222,16 +283,18 @@
 
   <div class="cursor-glow" id="cursorGlow"></div>
 
-  <div class="back">
-    <a href="index.html">&larr; back</a>
-  </div>
+  <nav class="sidebar">
+    <a href="index.html" class="back-link">&larr; back</a>
+    <div class="sidebar-title">Publications</div>
+    <a href="#books" class="nav-link active">books</a>
+    <a href="#essays" class="nav-link">peer-reviewed essays</a>
+    <a href="#criticism" class="nav-link">criticism</a>
+  </nav>
 
   <div class="container">
-    <h1 class="page-title">Selected Publications</h1>
-    <p class="page-subtitle">books, essays, and criticism</p>
 
     <!-- ── Books ── -->
-    <div class="section-label">Books</div>
+    <div class="section-label" id="books">Books</div>
     <ul class="pub-list" id="books">
       <li class="pub-item">
         <div class="pub-title"><a href="https://press.princeton.edu/books/paperback/9780691265704/close-reading-for-the-twenty-first-century" target="_blank" rel="noopener">Close Reading for the Twenty-First Century</a></div>
@@ -250,15 +313,11 @@
     <div class="section-divider"></div>
 
     <!-- ── Peer-Reviewed Essays ── -->
-    <div class="section-label">Peer-Reviewed Essays</div>
+    <div class="section-label" id="essays">Peer-Reviewed Essays</div>
     <ul class="pub-list">
       <li class="pub-item">
         <div class="pub-title"><a href="https://www.degruyterbrill.com/document/doi/10.1515/iasl-2025-0015/html" target="_blank" rel="noopener">Sociology and Allegory</a></div>
         <div class="pub-venue">Internationales Archiv f&uuml;r Sozialgeschichte der deutschen Literatur</div>
-      </li>
-      <li class="pub-item">
-        <div class="pub-title"><a href="https://asapjournal.com/on-editing-dan-sinykin/" target="_blank" rel="noopener">On Editing</a></div>
-        <div class="pub-venue">ASAP/J</div>
       </li>
       <li class="pub-item">
         <div class="pub-title"><a href="https://academic.oup.com/alh/article-abstract/33/2/225/6285480" target="_blank" rel="noopener">Literature and Publishing, 1945&ndash;2020</a></div>
@@ -285,7 +344,7 @@
     <div class="section-divider"></div>
 
     <!-- ── Criticism ── -->
-    <div class="section-label">Criticism</div>
+    <div class="section-label" id="criticism">Criticism</div>
     <ul class="pub-list">
       <li class="pub-item">
         <div class="pub-title"><a href="https://slate.com/life/2025/10/school-books-reading-literacy-crisis-common-core.html" target="_blank" rel="noopener">There's a Literacy Crisis. One Classroom Solution Should Be Obvious.</a></div>
@@ -322,6 +381,10 @@
       <li class="pub-item">
         <div class="pub-title"><a href="https://www.nytimes.com/2023/06/19/opinion/cormac-mccarthy-publishing.html" target="_blank" rel="noopener">Cormac McCarthy Had a Remarkable Literary Career</a></div>
         <div class="pub-venue">New York Times</div>
+      </li>
+      <li class="pub-item">
+        <div class="pub-title"><a href="https://asapjournal.com/on-editing-dan-sinykin/" target="_blank" rel="noopener">On Editing</a></div>
+        <div class="pub-venue">ASAP/J</div>
       </li>
       <li class="pub-item">
         <div class="pub-title"><a href="https://lareviewofbooks.org/article/the-sublime-danielle-steel/" target="_blank" rel="noopener">The Sublime Danielle Steel</a></div>
@@ -385,8 +448,26 @@
   <script>
     /* ── Staggered fade-in for publication items ── */
     document.querySelectorAll('.pub-item').forEach((item, i) => {
-      item.style.animationDelay = (0.6 + i * 0.05) + 's';
+      item.style.animationDelay = (0.4 + i * 0.04) + 's';
     });
+
+    /* ── Scroll-spy for sidebar ── */
+    const navLinks = document.querySelectorAll('.sidebar .nav-link');
+    const sections = document.querySelectorAll('.section-label[id]');
+
+    function updateActive() {
+      let current = 'books';
+      sections.forEach(s => {
+        if (window.scrollY >= s.offsetTop - 120) {
+          current = s.id;
+        }
+      });
+      navLinks.forEach(link => {
+        link.classList.toggle('active', link.getAttribute('href') === '#' + current);
+      });
+    }
+
+    window.addEventListener('scroll', updateActive, { passive: true });
 
     /* ── Cursor warmth ── */
     const glow = document.getElementById('cursorGlow');
