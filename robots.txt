@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://sinykin.github.io/sitemap.xml
