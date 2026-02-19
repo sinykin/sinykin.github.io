@@ -446,10 +446,10 @@
     for (let b = 0; b < BURST_COUNT; b++) {
       const cx = Math.random() * glitterCanvas.width;
       const cy = Math.random() * glitterCanvas.height;
-      const delay = Math.random() * 600;
+      const delay = Math.random() * 1200;
       for (let i = 0; i < SPARKS_PER_BURST; i++) {
         const angle = Math.random() * Math.PI * 2;
-        const speed = Math.random() * 2.5 + 0.8;
+        const speed = Math.random() * 1.8 + 0.4;
         const hue = Math.random() * 40 + 280; /* purple-pink range */
         const size = Math.random() * 3 + 1.5;
         sparks.push({
@@ -457,9 +457,10 @@
           vx: Math.cos(angle) * speed,
           vy: Math.sin(angle) * speed,
           life: 1,
-          decay: Math.random() * 0.012 + 0.008,
+          decay: Math.random() * 0.004 + 0.002,
           size: size,
           hue: hue,
+          hueDrift: (Math.random() - 0.5) * 0.4,
           delay: delay,
           born: performance.now(),
           twinkle: Math.random() * Math.PI * 2,
@@ -479,22 +480,24 @@
         alive = true;
         s.x += s.vx;
         s.y += s.vy;
-        s.vx *= 0.98;
-        s.vy *= 0.98;
-        s.vy += 0.02; /* tiny gravity */
+        s.vx *= 0.99;
+        s.vy *= 0.99;
+        s.vy += 0.01; /* tiny gravity */
         s.life -= s.decay;
-        s.twinkle += 0.15;
+        s.hue += s.hueDrift;
+        s.twinkle += 0.12;
 
         const flicker = 0.6 + 0.4 * Math.sin(s.twinkle);
-        const alpha = s.life * flicker;
-        if (alpha <= 0) return;
+        const alpha = s.life * s.life * flicker; /* quadratic fade for longer tail */
+        if (alpha <= 0.01) return;
 
         /* Draw a tiny 4-point star */
+        const curHue = ((s.hue % 360) + 360) % 360;
         gCtx.save();
         gCtx.translate(s.x, s.y);
         gCtx.rotate(s.twinkle * 0.3);
-        gCtx.fillStyle = `hsla(${s.hue}, 80%, 75%, ${alpha})`;
-        gCtx.shadowColor = `hsla(${s.hue}, 90%, 70%, ${alpha * 0.6})`;
+        gCtx.fillStyle = `hsla(${curHue}, 80%, 75%, ${alpha})`;
+        gCtx.shadowColor = `hsla(${curHue}, 90%, 70%, ${alpha * 0.6})`;
         gCtx.shadowBlur = 6;
         const r = s.size * s.life;
         gCtx.beginPath();
