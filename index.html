@@ -520,6 +520,243 @@
     }
 
     requestAnimationFrame(animateGlitter);
+
+    /* ── Roadrunner & Coyote chase ── */
+    const chaseCanvas = document.createElement('canvas');
+    chaseCanvas.style.cssText = 'position:fixed;bottom:0;left:0;width:100%;height:120px;z-index:4;pointer-events:none;';
+    document.body.appendChild(chaseCanvas);
+    const cCtx = chaseCanvas.getContext('2d');
+    chaseCanvas.width = window.innerWidth;
+    chaseCanvas.height = 120;
+
+    const ground = 100;
+    let rrX = -120, coyX = -320;
+    const rrSpeed = 4.5, coySpeed = 3.8;
+    let frame = 0;
+
+    function drawRoadrunner(x, f) {
+      cCtx.save();
+      cCtx.translate(x, ground);
+      const bob = Math.sin(f * 0.4) * 2;
+      const legPhase = f * 0.5;
+
+      /* Body - sleek blue */
+      cCtx.fillStyle = '#4a90d9';
+      cCtx.beginPath();
+      cCtx.ellipse(0, -22 + bob, 22, 10, -0.1, 0, Math.PI * 2);
+      cCtx.fill();
+
+      /* Tail feathers */
+      cCtx.strokeStyle = '#4a90d9';
+      cCtx.lineWidth = 2.5;
+      for (let i = 0; i < 4; i++) {
+        cCtx.beginPath();
+        cCtx.moveTo(-18, -22 + bob);
+        cCtx.lineTo(-42 - i * 4, -28 + i * 5 + bob + Math.sin(f * 0.3 + i) * 2);
+        cCtx.stroke();
+      }
+
+      /* Neck */
+      cCtx.fillStyle = '#4a90d9';
+      cCtx.beginPath();
+      cCtx.ellipse(14, -34 + bob, 5, 14, 0.2, 0, Math.PI * 2);
+      cCtx.fill();
+
+      /* Head */
+      cCtx.fillStyle = '#5ba0e8';
+      cCtx.beginPath();
+      cCtx.arc(18, -48 + bob, 8, 0, Math.PI * 2);
+      cCtx.fill();
+
+      /* Crest */
+      cCtx.strokeStyle = '#4a90d9';
+      cCtx.lineWidth = 2;
+      cCtx.beginPath();
+      cCtx.moveTo(14, -54 + bob);
+      cCtx.lineTo(8, -64 + bob);
+      cCtx.stroke();
+      cCtx.beginPath();
+      cCtx.moveTo(17, -55 + bob);
+      cCtx.lineTo(14, -66 + bob);
+      cCtx.stroke();
+
+      /* Eye */
+      cCtx.fillStyle = '#fff';
+      cCtx.beginPath();
+      cCtx.arc(22, -50 + bob, 3, 0, Math.PI * 2);
+      cCtx.fill();
+      cCtx.fillStyle = '#111';
+      cCtx.beginPath();
+      cCtx.arc(23, -50 + bob, 1.5, 0, Math.PI * 2);
+      cCtx.fill();
+
+      /* Beak */
+      cCtx.fillStyle = '#e8a838';
+      cCtx.beginPath();
+      cCtx.moveTo(25, -50 + bob);
+      cCtx.lineTo(38, -47 + bob);
+      cCtx.lineTo(25, -45 + bob);
+      cCtx.closePath();
+      cCtx.fill();
+
+      /* Legs - blurring run cycle */
+      cCtx.strokeStyle = '#e8a838';
+      cCtx.lineWidth = 2.5;
+      for (let l = 0; l < 3; l++) {
+        const lp = legPhase + l * 2.1;
+        const footX = Math.cos(lp) * 12;
+        const footY = Math.abs(Math.sin(lp)) * -8;
+        cCtx.globalAlpha = l === 1 ? 1 : 0.35;
+        cCtx.beginPath();
+        cCtx.moveTo(0, -14 + bob);
+        cCtx.lineTo(footX, footY);
+        cCtx.stroke();
+      }
+      cCtx.globalAlpha = 1;
+
+      /* Dust puffs */
+      cCtx.fillStyle = 'rgba(180,170,150,0.25)';
+      for (let d = 0; d < 3; d++) {
+        const dx = -25 - d * 14 - Math.random() * 6;
+        const dy = -4 - Math.random() * 8;
+        const dr = 5 + d * 3 + Math.sin(f * 0.6 + d) * 2;
+        cCtx.beginPath();
+        cCtx.arc(dx, dy + bob, dr, 0, Math.PI * 2);
+        cCtx.fill();
+      }
+
+      cCtx.restore();
+    }
+
+    function drawCoyote(x, f) {
+      cCtx.save();
+      cCtx.translate(x, ground);
+      const bob = Math.sin(f * 0.35 + 1) * 3;
+      const legPhase = f * 0.45;
+      const lean = 0.15; /* leaning forward eagerly */
+
+      /* Body - brown */
+      cCtx.fillStyle = '#9a7b5b';
+      cCtx.beginPath();
+      cCtx.ellipse(0, -24 + bob, 24, 11, lean, 0, Math.PI * 2);
+      cCtx.fill();
+
+      /* Tail */
+      cCtx.strokeStyle = '#9a7b5b';
+      cCtx.lineWidth = 4;
+      cCtx.beginPath();
+      cCtx.moveTo(-20, -20 + bob);
+      cCtx.quadraticCurveTo(-38, -14 + bob + Math.sin(f * 0.25) * 6, -44, -26 + bob);
+      cCtx.stroke();
+
+      /* Neck & head */
+      cCtx.fillStyle = '#9a7b5b';
+      cCtx.beginPath();
+      cCtx.ellipse(18, -36 + bob, 5, 14, 0.3, 0, Math.PI * 2);
+      cCtx.fill();
+
+      /* Head */
+      cCtx.fillStyle = '#a8896b';
+      cCtx.beginPath();
+      cCtx.ellipse(24, -50 + bob, 8, 7, 0.2, 0, Math.PI * 2);
+      cCtx.fill();
+
+      /* Snout */
+      cCtx.fillStyle = '#b89a7a';
+      cCtx.beginPath();
+      cCtx.ellipse(34, -48 + bob, 10, 4, 0.1, 0, Math.PI * 2);
+      cCtx.fill();
+
+      /* Nose */
+      cCtx.fillStyle = '#222';
+      cCtx.beginPath();
+      cCtx.arc(43, -48 + bob, 2.5, 0, Math.PI * 2);
+      cCtx.fill();
+
+      /* Eye */
+      cCtx.fillStyle = '#fff';
+      cCtx.beginPath();
+      cCtx.arc(28, -52 + bob, 3.5, 0, Math.PI * 2);
+      cCtx.fill();
+      cCtx.fillStyle = '#111';
+      cCtx.beginPath();
+      cCtx.arc(29.5, -52 + bob, 1.8, 0, Math.PI * 2);
+      cCtx.fill();
+
+      /* Ears */
+      cCtx.fillStyle = '#8a6b4b';
+      cCtx.beginPath();
+      cCtx.moveTo(18, -55 + bob);
+      cCtx.lineTo(14, -68 + bob);
+      cCtx.lineTo(22, -58 + bob);
+      cCtx.closePath();
+      cCtx.fill();
+      cCtx.beginPath();
+      cCtx.moveTo(22, -56 + bob);
+      cCtx.lineTo(20, -69 + bob);
+      cCtx.lineTo(27, -58 + bob);
+      cCtx.closePath();
+      cCtx.fill();
+
+      /* Arms reaching forward */
+      cCtx.strokeStyle = '#9a7b5b';
+      cCtx.lineWidth = 3;
+      const reach = Math.sin(f * 0.3) * 4;
+      cCtx.beginPath();
+      cCtx.moveTo(16, -28 + bob);
+      cCtx.quadraticCurveTo(34, -34 + bob, 44 + reach, -30 + bob);
+      cCtx.stroke();
+      cCtx.beginPath();
+      cCtx.moveTo(14, -26 + bob);
+      cCtx.quadraticCurveTo(30, -28 + bob, 40 + reach, -22 + bob);
+      cCtx.stroke();
+
+      /* Legs */
+      cCtx.strokeStyle = '#9a7b5b';
+      cCtx.lineWidth = 3;
+      for (let l = 0; l < 2; l++) {
+        const lp = legPhase + l * Math.PI;
+        const kx = Math.cos(lp) * 10;
+        const ky = Math.abs(Math.sin(lp)) * -10;
+        cCtx.beginPath();
+        cCtx.moveTo(-4 + l * 10, -14 + bob);
+        cCtx.lineTo(-4 + l * 10 + kx, ky);
+        cCtx.stroke();
+      }
+
+      /* Dust */
+      cCtx.fillStyle = 'rgba(180,170,150,0.2)';
+      for (let d = 0; d < 2; d++) {
+        const dx = -30 - d * 16 - Math.random() * 4;
+        const dy = -3 - Math.random() * 6;
+        const dr = 6 + d * 4;
+        cCtx.beginPath();
+        cCtx.arc(dx, dy + bob, dr, 0, Math.PI * 2);
+        cCtx.fill();
+      }
+
+      cCtx.restore();
+    }
+
+    function animateChase() {
+      cCtx.clearRect(0, 0, chaseCanvas.width, chaseCanvas.height);
+      frame++;
+
+      drawRoadrunner(rrX, frame);
+      drawCoyote(coyX, frame);
+
+      rrX += rrSpeed;
+      coyX += coySpeed;
+
+      if (coyX > chaseCanvas.width + 350) {
+        chaseCanvas.remove();
+      } else {
+        requestAnimationFrame(animateChase);
+      }
+    }
+
+    /* Start chase after a brief moment */
+    setTimeout(() => requestAnimationFrame(animateChase), 500);
   </script>
 </body>
 </html>
