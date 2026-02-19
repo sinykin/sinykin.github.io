@@ -523,13 +523,13 @@
 
     /* ── Roadrunner & Coyote chase ── */
     const chaseCanvas = document.createElement('canvas');
-    chaseCanvas.style.cssText = 'position:fixed;bottom:0;left:0;width:100%;height:120px;z-index:4;pointer-events:none;';
+    chaseCanvas.style.cssText = 'position:fixed;bottom:0;left:0;width:100%;height:140px;z-index:4;pointer-events:none;';
     document.body.appendChild(chaseCanvas);
     const cCtx = chaseCanvas.getContext('2d');
     chaseCanvas.width = window.innerWidth;
-    chaseCanvas.height = 120;
+    chaseCanvas.height = 140;
 
-    const ground = 100;
+    const ground = 120;
     let rrX = -120, coyX = -320;
     const rrSpeed = 4.5, coySpeed = 3.8;
     let frame = 0;
@@ -540,85 +540,142 @@
       const bob = Math.sin(f * 0.4) * 2;
       const legPhase = f * 0.5;
 
-      /* Body - sleek blue */
-      cCtx.fillStyle = '#4a90d9';
-      cCtx.beginPath();
-      cCtx.ellipse(0, -22 + bob, 22, 10, -0.1, 0, Math.PI * 2);
-      cCtx.fill();
-
-      /* Tail feathers */
-      cCtx.strokeStyle = '#4a90d9';
-      cCtx.lineWidth = 2.5;
-      for (let i = 0; i < 4; i++) {
+      /* Tail feathers - long, classic 3-feather spread */
+      cCtx.lineWidth = 3;
+      cCtx.lineCap = 'round';
+      const tailColors = ['#2d1b69','#3b2d7a','#1e1254'];
+      for (let i = 0; i < 3; i++) {
+        cCtx.strokeStyle = tailColors[i];
         cCtx.beginPath();
-        cCtx.moveTo(-18, -22 + bob);
-        cCtx.lineTo(-42 - i * 4, -28 + i * 5 + bob + Math.sin(f * 0.3 + i) * 2);
+        cCtx.moveTo(-16, -24 + bob);
+        const sway = Math.sin(f * 0.25 + i * 0.7) * 3;
+        cCtx.quadraticCurveTo(-36, -26 + i * 4 + bob + sway, -52 - i * 6, -24 + i * 6 + bob + sway);
         cCtx.stroke();
       }
 
-      /* Neck */
-      cCtx.fillStyle = '#4a90d9';
+      /* Body - plump purple-blue like the classic */
+      cCtx.fillStyle = '#3a2d7a';
       cCtx.beginPath();
-      cCtx.ellipse(14, -34 + bob, 5, 14, 0.2, 0, Math.PI * 2);
+      cCtx.ellipse(0, -24 + bob, 20, 11, -0.08, 0, Math.PI * 2);
       cCtx.fill();
 
-      /* Head */
-      cCtx.fillStyle = '#5ba0e8';
+      /* Chest/belly - lighter lavender */
+      cCtx.fillStyle = '#6b5fbf';
       cCtx.beginPath();
-      cCtx.arc(18, -48 + bob, 8, 0, Math.PI * 2);
+      cCtx.ellipse(6, -20 + bob, 10, 7, -0.1, 0, Math.PI * 2);
       cCtx.fill();
 
-      /* Crest */
-      cCtx.strokeStyle = '#4a90d9';
-      cCtx.lineWidth = 2;
+      /* Neck - long and thin, classic RR proportions */
+      cCtx.fillStyle = '#3a2d7a';
       cCtx.beginPath();
-      cCtx.moveTo(14, -54 + bob);
-      cCtx.lineTo(8, -64 + bob);
-      cCtx.stroke();
-      cCtx.beginPath();
-      cCtx.moveTo(17, -55 + bob);
-      cCtx.lineTo(14, -66 + bob);
-      cCtx.stroke();
-
-      /* Eye */
-      cCtx.fillStyle = '#fff';
-      cCtx.beginPath();
-      cCtx.arc(22, -50 + bob, 3, 0, Math.PI * 2);
-      cCtx.fill();
-      cCtx.fillStyle = '#111';
-      cCtx.beginPath();
-      cCtx.arc(23, -50 + bob, 1.5, 0, Math.PI * 2);
-      cCtx.fill();
-
-      /* Beak */
-      cCtx.fillStyle = '#e8a838';
-      cCtx.beginPath();
-      cCtx.moveTo(25, -50 + bob);
-      cCtx.lineTo(38, -47 + bob);
-      cCtx.lineTo(25, -45 + bob);
+      cCtx.moveTo(12, -30 + bob);
+      cCtx.quadraticCurveTo(20, -42 + bob, 18, -52 + bob);
+      cCtx.quadraticCurveTo(16, -42 + bob, 8, -30 + bob);
       cCtx.closePath();
       cCtx.fill();
 
-      /* Legs - blurring run cycle */
-      cCtx.strokeStyle = '#e8a838';
+      /* Head - round, slightly oblong */
+      cCtx.fillStyle = '#4535a0';
+      cCtx.beginPath();
+      cCtx.ellipse(19, -56 + bob, 9, 8, 0.15, 0, Math.PI * 2);
+      cCtx.fill();
+
+      /* Head crest / plume - tall upright feathers, signature look */
+      cCtx.strokeStyle = '#3a2d7a';
       cCtx.lineWidth = 2.5;
-      for (let l = 0; l < 3; l++) {
-        const lp = legPhase + l * 2.1;
-        const footX = Math.cos(lp) * 12;
-        const footY = Math.abs(Math.sin(lp)) * -8;
-        cCtx.globalAlpha = l === 1 ? 1 : 0.35;
+      cCtx.lineCap = 'round';
+      const crests = [[-3, -18], [0, -20], [3, -17]];
+      crests.forEach(([dx, dy]) => {
         cCtx.beginPath();
-        cCtx.moveTo(0, -14 + bob);
+        cCtx.moveTo(16 + dx * 0.3, -62 + bob);
+        cCtx.quadraticCurveTo(14 + dx * 0.5, -70 + bob + dy * 0.15, 12 + dx, -76 + dy * 0.3 + bob + Math.sin(f * 0.3) * 1.5);
+        cCtx.stroke();
+      });
+      /* Crest tips - little dots */
+      cCtx.fillStyle = '#3a2d7a';
+      crests.forEach(([dx, dy]) => {
+        cCtx.beginPath();
+        cCtx.arc(12 + dx, -76 + dy * 0.3 + bob + Math.sin(f * 0.3) * 1.5, 2, 0, Math.PI * 2);
+        cCtx.fill();
+      });
+
+      /* Eye - big, expressive, classic cartoon eye */
+      cCtx.fillStyle = '#fff';
+      cCtx.beginPath();
+      cCtx.ellipse(24, -58 + bob, 5, 5.5, 0, 0, Math.PI * 2);
+      cCtx.fill();
+      /* Pupil */
+      cCtx.fillStyle = '#111';
+      cCtx.beginPath();
+      cCtx.arc(25.5, -58 + bob, 2.5, 0, Math.PI * 2);
+      cCtx.fill();
+      /* Eye highlight */
+      cCtx.fillStyle = '#fff';
+      cCtx.beginPath();
+      cCtx.arc(26.5, -59.5 + bob, 1, 0, Math.PI * 2);
+      cCtx.fill();
+
+      /* Beak - long, orange, slightly open */
+      cCtx.fillStyle = '#f5a623';
+      cCtx.beginPath();
+      cCtx.moveTo(27, -57 + bob);
+      cCtx.lineTo(46, -54 + bob);
+      cCtx.lineTo(27, -53 + bob);
+      cCtx.closePath();
+      cCtx.fill();
+      /* Lower beak - slightly open */
+      cCtx.fillStyle = '#e8931e';
+      cCtx.beginPath();
+      cCtx.moveTo(27, -53 + bob);
+      cCtx.lineTo(43, -52 + bob);
+      cCtx.lineTo(27, -51 + bob);
+      cCtx.closePath();
+      cCtx.fill();
+
+      /* Throat - lighter patch */
+      cCtx.fillStyle = '#8678cc';
+      cCtx.beginPath();
+      cCtx.ellipse(22, -50 + bob, 4, 3, 0.3, 0, Math.PI * 2);
+      cCtx.fill();
+
+      /* Legs - long orange, classic spinning wheel blur */
+      cCtx.strokeStyle = '#f5a623';
+      cCtx.lineWidth = 2.5;
+      cCtx.lineCap = 'round';
+      for (let l = 0; l < 4; l++) {
+        const lp = legPhase + l * 1.57;
+        const hipX = 0;
+        const hipY = -14 + bob;
+        const kneeAngle = lp;
+        const kneeX = hipX + Math.cos(kneeAngle) * 10;
+        const kneeY = hipY + 6 + Math.abs(Math.sin(kneeAngle)) * -6;
+        const footX = kneeX + Math.cos(kneeAngle + 0.4) * 10;
+        const footY = Math.max(kneeY + 6, -2);
+        cCtx.globalAlpha = l < 2 ? 0.8 : 0.25;
+        cCtx.beginPath();
+        cCtx.moveTo(hipX, hipY);
+        cCtx.lineTo(kneeX, kneeY);
         cCtx.lineTo(footX, footY);
         cCtx.stroke();
+        /* Foot - three toes */
+        cCtx.lineWidth = 1.5;
+        cCtx.beginPath();
+        cCtx.moveTo(footX - 3, footY);
+        cCtx.lineTo(footX + 5, footY + 1);
+        cCtx.moveTo(footX - 2, footY);
+        cCtx.lineTo(footX + 6, footY - 1);
+        cCtx.moveTo(footX - 1, footY - 1);
+        cCtx.lineTo(footX + 4, footY - 3);
+        cCtx.stroke();
+        cCtx.lineWidth = 2.5;
       }
       cCtx.globalAlpha = 1;
 
-      /* Dust puffs */
-      cCtx.fillStyle = 'rgba(180,170,150,0.25)';
-      for (let d = 0; d < 3; d++) {
-        const dx = -25 - d * 14 - Math.random() * 6;
-        const dy = -4 - Math.random() * 8;
+      /* Dust puffs - classic cartoon clouds */
+      cCtx.fillStyle = 'rgba(180,170,150,0.3)';
+      for (let d = 0; d < 4; d++) {
+        const dx = -22 - d * 12 - Math.random() * 4;
+        const dy = -4 - Math.random() * 6;
         const dr = 5 + d * 3 + Math.sin(f * 0.6 + d) * 2;
         cCtx.beginPath();
         cCtx.arc(dx, dy + bob, dr, 0, Math.PI * 2);
@@ -633,103 +690,203 @@
       cCtx.translate(x, ground);
       const bob = Math.sin(f * 0.35 + 1) * 3;
       const legPhase = f * 0.45;
-      const lean = 0.15; /* leaning forward eagerly */
 
-      /* Body - brown */
-      cCtx.fillStyle = '#9a7b5b';
+      /* Tail - thin, droopy, scraggly */
+      cCtx.strokeStyle = '#8a7a6a';
+      cCtx.lineWidth = 3.5;
+      cCtx.lineCap = 'round';
       cCtx.beginPath();
-      cCtx.ellipse(0, -24 + bob, 24, 11, lean, 0, Math.PI * 2);
-      cCtx.fill();
-
-      /* Tail */
-      cCtx.strokeStyle = '#9a7b5b';
-      cCtx.lineWidth = 4;
-      cCtx.beginPath();
-      cCtx.moveTo(-20, -20 + bob);
-      cCtx.quadraticCurveTo(-38, -14 + bob + Math.sin(f * 0.25) * 6, -44, -26 + bob);
+      cCtx.moveTo(-18, -22 + bob);
+      const tailWag = Math.sin(f * 0.25) * 5;
+      cCtx.quadraticCurveTo(-34, -16 + bob + tailWag, -46, -10 + bob + tailWag);
       cCtx.stroke();
-
-      /* Neck & head */
-      cCtx.fillStyle = '#9a7b5b';
+      /* Tail tip - darker tuft */
+      cCtx.fillStyle = '#5a4a3a';
       cCtx.beginPath();
-      cCtx.ellipse(18, -36 + bob, 5, 14, 0.3, 0, Math.PI * 2);
+      cCtx.ellipse(-46, -10 + bob + tailWag, 4, 3, 0.5, 0, Math.PI * 2);
       cCtx.fill();
 
-      /* Head */
-      cCtx.fillStyle = '#a8896b';
+      /* Body - thin, lanky, grey-brown */
+      cCtx.fillStyle = '#8a7a6a';
       cCtx.beginPath();
-      cCtx.ellipse(24, -50 + bob, 8, 7, 0.2, 0, Math.PI * 2);
+      cCtx.ellipse(0, -26 + bob, 20, 10, 0.12, 0, Math.PI * 2);
       cCtx.fill();
 
-      /* Snout */
-      cCtx.fillStyle = '#b89a7a';
+      /* Belly - lighter tan, classic Wile E. */
+      cCtx.fillStyle = '#c4ad8a';
       cCtx.beginPath();
-      cCtx.ellipse(34, -48 + bob, 10, 4, 0.1, 0, Math.PI * 2);
+      cCtx.ellipse(2, -22 + bob, 12, 6, 0.12, 0, Math.PI * 2);
       cCtx.fill();
 
-      /* Nose */
-      cCtx.fillStyle = '#222';
+      /* Neck - long, leaning forward desperately */
+      cCtx.fillStyle = '#8a7a6a';
       cCtx.beginPath();
-      cCtx.arc(43, -48 + bob, 2.5, 0, Math.PI * 2);
+      cCtx.moveTo(14, -32 + bob);
+      cCtx.quadraticCurveTo(24, -44 + bob, 22, -52 + bob);
+      cCtx.quadraticCurveTo(18, -44 + bob, 8, -32 + bob);
+      cCtx.closePath();
       cCtx.fill();
 
-      /* Eye */
-      cCtx.fillStyle = '#fff';
+      /* Head - flattish on top, classic shape */
+      cCtx.fillStyle = '#8a7a6a';
       cCtx.beginPath();
-      cCtx.arc(28, -52 + bob, 3.5, 0, Math.PI * 2);
+      cCtx.ellipse(24, -56 + bob, 9, 7.5, 0.15, 0, Math.PI * 2);
       cCtx.fill();
+
+      /* Snout - very long, pointed, classic Wile E. */
+      cCtx.fillStyle = '#9a8a7a';
+      cCtx.beginPath();
+      cCtx.moveTo(30, -60 + bob);
+      cCtx.quadraticCurveTo(42, -57 + bob, 52, -54 + bob);
+      cCtx.quadraticCurveTo(42, -51 + bob, 30, -52 + bob);
+      cCtx.closePath();
+      cCtx.fill();
+
+      /* Nose - big black */
       cCtx.fillStyle = '#111';
       cCtx.beginPath();
-      cCtx.arc(29.5, -52 + bob, 1.8, 0, Math.PI * 2);
+      cCtx.ellipse(52, -54 + bob, 3, 2.5, 0, 0, Math.PI * 2);
       cCtx.fill();
 
-      /* Ears */
-      cCtx.fillStyle = '#8a6b4b';
+      /* Mouth line */
+      cCtx.strokeStyle = '#5a4a3a';
+      cCtx.lineWidth = 1;
       cCtx.beginPath();
-      cCtx.moveTo(18, -55 + bob);
-      cCtx.lineTo(14, -68 + bob);
-      cCtx.lineTo(22, -58 + bob);
+      cCtx.moveTo(30, -53 + bob);
+      cCtx.quadraticCurveTo(40, -51 + bob, 49, -53 + bob);
+      cCtx.stroke();
+
+      /* Tongue out - desperate panting */
+      const tongueWag = Math.sin(f * 0.5) * 1;
+      cCtx.fillStyle = '#e85050';
+      cCtx.beginPath();
+      cCtx.ellipse(42, -49 + bob + tongueWag, 3, 4, 0.2, 0, Math.PI * 2);
+      cCtx.fill();
+
+      /* Eye - big, wild, desperate */
+      cCtx.fillStyle = '#fff';
+      cCtx.beginPath();
+      cCtx.ellipse(27, -59 + bob, 5, 5.5, 0, 0, Math.PI * 2);
+      cCtx.fill();
+      /* Pupil - small, desperate look */
+      cCtx.fillStyle = '#111';
+      cCtx.beginPath();
+      cCtx.arc(29, -59 + bob, 2.5, 0, Math.PI * 2);
+      cCtx.fill();
+      /* Eye highlight */
+      cCtx.fillStyle = '#fff';
+      cCtx.beginPath();
+      cCtx.arc(30, -60.5 + bob, 0.8, 0, Math.PI * 2);
+      cCtx.fill();
+      /* Bloodshot lines */
+      cCtx.strokeStyle = 'rgba(200,60,60,0.4)';
+      cCtx.lineWidth = 0.5;
+      cCtx.beginPath();
+      cCtx.moveTo(24, -61 + bob); cCtx.lineTo(26, -60 + bob);
+      cCtx.moveTo(24, -57 + bob); cCtx.lineTo(26, -58 + bob);
+      cCtx.stroke();
+
+      /* Eyebrow - furrowed, manic */
+      cCtx.strokeStyle = '#5a4a3a';
+      cCtx.lineWidth = 1.5;
+      cCtx.beginPath();
+      cCtx.moveTo(22, -65 + bob);
+      cCtx.quadraticCurveTo(27, -67 + bob, 32, -64 + bob);
+      cCtx.stroke();
+
+      /* Ears - tall, floppy, classic pointed ears */
+      cCtx.fillStyle = '#8a7a6a';
+      /* Left ear */
+      cCtx.beginPath();
+      cCtx.moveTo(17, -61 + bob);
+      cCtx.quadraticCurveTo(10, -78 + bob, 14, -80 + bob);
+      cCtx.quadraticCurveTo(18, -78 + bob, 21, -63 + bob);
+      cCtx.closePath();
+      cCtx.fill();
+      /* Right ear */
+      cCtx.beginPath();
+      cCtx.moveTo(22, -62 + bob);
+      cCtx.quadraticCurveTo(18, -80 + bob, 22, -82 + bob);
+      cCtx.quadraticCurveTo(26, -80 + bob, 26, -63 + bob);
+      cCtx.closePath();
+      cCtx.fill();
+      /* Ear insides - pink */
+      cCtx.fillStyle = '#c49a7a';
+      cCtx.beginPath();
+      cCtx.moveTo(18, -63 + bob);
+      cCtx.quadraticCurveTo(12, -75 + bob, 14.5, -77 + bob);
+      cCtx.quadraticCurveTo(17, -75 + bob, 20, -64 + bob);
       cCtx.closePath();
       cCtx.fill();
       cCtx.beginPath();
-      cCtx.moveTo(22, -56 + bob);
-      cCtx.lineTo(20, -69 + bob);
-      cCtx.lineTo(27, -58 + bob);
+      cCtx.moveTo(23, -64 + bob);
+      cCtx.quadraticCurveTo(19.5, -77 + bob, 22.5, -79 + bob);
+      cCtx.quadraticCurveTo(25, -77 + bob, 25, -65 + bob);
       cCtx.closePath();
       cCtx.fill();
 
-      /* Arms reaching forward */
-      cCtx.strokeStyle = '#9a7b5b';
+      /* Arms - reaching desperately forward */
+      cCtx.strokeStyle = '#8a7a6a';
       cCtx.lineWidth = 3;
-      const reach = Math.sin(f * 0.3) * 4;
+      cCtx.lineCap = 'round';
+      const reach = Math.sin(f * 0.3) * 5;
+      /* Upper arm → elbow → hand reaching */
       cCtx.beginPath();
-      cCtx.moveTo(16, -28 + bob);
-      cCtx.quadraticCurveTo(34, -34 + bob, 44 + reach, -30 + bob);
+      cCtx.moveTo(14, -30 + bob);
+      cCtx.quadraticCurveTo(28, -38 + bob, 38 + reach, -36 + bob);
       cCtx.stroke();
       cCtx.beginPath();
-      cCtx.moveTo(14, -26 + bob);
-      cCtx.quadraticCurveTo(30, -28 + bob, 40 + reach, -22 + bob);
+      cCtx.moveTo(12, -28 + bob);
+      cCtx.quadraticCurveTo(24, -32 + bob, 34 + reach, -28 + bob);
       cCtx.stroke();
-
-      /* Legs */
-      cCtx.strokeStyle = '#9a7b5b';
-      cCtx.lineWidth = 3;
-      for (let l = 0; l < 2; l++) {
-        const lp = legPhase + l * Math.PI;
-        const kx = Math.cos(lp) * 10;
-        const ky = Math.abs(Math.sin(lp)) * -10;
+      /* Fingers - grasping */
+      cCtx.lineWidth = 1.5;
+      for (let fg = 0; fg < 3; fg++) {
         cCtx.beginPath();
-        cCtx.moveTo(-4 + l * 10, -14 + bob);
-        cCtx.lineTo(-4 + l * 10 + kx, ky);
+        cCtx.moveTo(38 + reach, -36 + bob);
+        cCtx.lineTo(42 + reach + fg * 1.5, -38 + fg * 2 + bob);
+        cCtx.stroke();
+      }
+      for (let fg = 0; fg < 3; fg++) {
+        cCtx.beginPath();
+        cCtx.moveTo(34 + reach, -28 + bob);
+        cCtx.lineTo(38 + reach + fg * 1.5, -30 + fg * 2 + bob);
         cCtx.stroke();
       }
 
-      /* Dust */
+      /* Legs - running, skinny */
+      cCtx.strokeStyle = '#8a7a6a';
+      cCtx.lineWidth = 3;
+      for (let l = 0; l < 3; l++) {
+        const lp = legPhase + l * 2.1;
+        const hipX = -4 + (l % 2) * 8;
+        const hipY = -16 + bob;
+        const kneeX = hipX + Math.cos(lp) * 10;
+        const kneeY = hipY + 6 + Math.abs(Math.sin(lp)) * -8;
+        const footX = kneeX + Math.cos(lp + 0.5) * 8;
+        const footY = Math.max(kneeY + 6, -1);
+        cCtx.globalAlpha = l === 0 ? 0.9 : 0.25;
+        cCtx.beginPath();
+        cCtx.moveTo(hipX, hipY);
+        cCtx.lineTo(kneeX, kneeY);
+        cCtx.lineTo(footX, footY);
+        cCtx.stroke();
+        /* Feet */
+        cCtx.lineWidth = 2;
+        cCtx.beginPath();
+        cCtx.moveTo(footX, footY);
+        cCtx.lineTo(footX + 6, footY + 1);
+        cCtx.stroke();
+        cCtx.lineWidth = 3;
+      }
+      cCtx.globalAlpha = 1;
+
+      /* Dust puffs */
       cCtx.fillStyle = 'rgba(180,170,150,0.2)';
-      for (let d = 0; d < 2; d++) {
-        const dx = -30 - d * 16 - Math.random() * 4;
+      for (let d = 0; d < 3; d++) {
+        const dx = -26 - d * 14 - Math.random() * 4;
         const dy = -3 - Math.random() * 6;
-        const dr = 6 + d * 4;
+        const dr = 5 + d * 3.5;
         cCtx.beginPath();
         cCtx.arc(dx, dy + bob, dr, 0, Math.PI * 2);
         cCtx.fill();
