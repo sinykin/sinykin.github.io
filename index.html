@@ -303,23 +303,22 @@
     </nav>
 
     <div class="epigraph">
-      <p id="plainview"></p>
+      <p id="dude"></p>
     </div>
   </div>
 
   <script>
-    /* ── Random Plainview quote ── */
+    /* ── Random Lebowski quote ── */
     const quotes = [
-      "I have a competition in me.\nI want no one else to succeed.",
-      "I drink your milkshake.\nI drink it up.",
-      "I have a weakness.\nIt has lasted all my life.",
-      "Don\u2019t be thick in front of me, Al.",
-      "I\u2019m finished.",
-      "I told you I would eat you.",
-      "Are you an angry man, Henry?",
+      "The Dude abides.",
+      "Yeah, well, you know,\nthat\u2019s just, like, your opinion, man.",
+      "This aggression will not stand, man.",
+      "Sometimes you eat the bar,\nand sometimes, well, the bar eats you.",
+      "Obviously you\u2019re not a golfer.",
+      "Careful, man, there\u2019s a beverage here.",
     ];
     const q = quotes[Math.floor(Math.random() * quotes.length)];
-    const el = document.getElementById('plainview');
+    const el = document.getElementById('dude');
     el.innerHTML = '\u201C' + q.replace(/\n/g, '<br>') + '\u201D';
 
     /* ── Letter-by-letter name render ── */
