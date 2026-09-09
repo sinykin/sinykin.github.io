@@ -303,22 +303,23 @@
     </nav>
 
     <div class="epigraph">
-      <p id="dude"></p>
+      <p id="epigraph-quote"></p>
     </div>
   </div>
 
   <script>
-    /* ── Random Lebowski quote ── */
+    /* ── Random Gravity's Rainbow quote ── */
     const quotes = [
-      "The Dude abides.",
-      "Yeah, well, you know,\nthat\u2019s just, like, your opinion, man.",
-      "This aggression will not stand, man.",
-      "Sometimes you eat the bar,\nand sometimes, well, the bar eats you.",
-      "Obviously you\u2019re not a golfer.",
-      "Careful, man, there\u2019s a beverage here.",
+      "A screaming comes across the sky.",
+      "It has happened before,\nbut there is nothing to compare it to now.",
+      "If they can get you asking the wrong questions,\nthey don\u2019t have to worry about answers.",
+      "You may never get to touch the Master,\nbut you can tickle his creatures.",
+      "You hide, they seek.",
+      "You will want cause and effect. All right.",
+      "A market needed no longer be run by the Invisible Hand,\nbut now could create itself \u2014\nits own logic, momentum, style, from inside.",
     ];
     const q = quotes[Math.floor(Math.random() * quotes.length)];
-    const el = document.getElementById('dude');
+    const el = document.getElementById('epigraph-quote');
     el.innerHTML = '\u201C' + q.replace(/\n/g, '<br>') + '\u201D';
 
     /* ── Letter-by-letter name render ── */
