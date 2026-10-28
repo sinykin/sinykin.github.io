@@ -292,6 +292,7 @@
     <a href="#books" class="nav-link active">books</a>
     <a href="#essays" class="nav-link">peer-reviewed essays</a>
     <a href="#criticism" class="nav-link">criticism</a>
+    <a href="#reportage" class="nav-link">reportage</a>
   </nav>
 
   <div class="container">
@@ -357,6 +358,10 @@
     <!-- ── Criticism ── -->
     <div class="section-label" id="criticism">Criticism</div>
     <ul class="pub-list">
+      <li class="pub-item">
+        <div class="pub-title"><a href="https://www.thenation.com/article/environment/how-a-creative-mind-lives-in-nature/" target="_blank" rel="noopener">How a Creative Mind Lives in Nature</a></div>
+        <div class="pub-venue">The Nation, 2026</div>
+      </li>
       <li class="pub-item">
         <div class="pub-title"><a href="https://slate.com/life/2025/10/school-books-reading-literacy-crisis-common-core.html" target="_blank" rel="noopener">There's a Literacy Crisis. One Classroom Solution Should Be Obvious.</a></div>
         <div class="pub-venue">Slate, 2025 (with Johanna Winant)</div>
@@ -450,6 +455,17 @@
         <div class="pub-venue">Avidly, 2016</div>
       </li>
     </ul>
+
+    <div class="section-divider"></div>
+
+    <!-- ── Reportage ── -->
+    <div class="section-label" id="reportage">Reportage</div>
+    <ul class="pub-list">
+      <li class="pub-item">
+        <div class="pub-title"><a href="https://jewishcurrents.org/what-pen-america-got-wrong-about-antisemitism-in-publishing" target="_blank" rel="noopener">What PEN America Got Wrong About Antisemitism in Publishing</a></div>
+        <div class="pub-venue">Jewish Currents, 2026 (with Josh Lambert)</div>
+      </li>
+    </ul>
   </div>
 
   <script>
@@ -469,6 +485,10 @@
           current = s.id;
         }
       });
+      /* At the bottom of the page, a short final section can't scroll to the top */
+      if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) {
+        current = sections[sections.length - 1].id;
+      }
       navLinks.forEach(link => {
         link.classList.toggle('active', link.getAttribute('href') === '#' + current);
       });
